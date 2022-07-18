@@ -1,0 +1,35 @@
+----------------------------------
+process pics into color channels
+
+(with the black and white it 
+already is, i think it will be
+for a color image dataset too)
+----------------------------------
+
+
+----------------------------------
+make an arbitrary triangle
+
+test against actual image
+
+come up with 20(n) triangle shapes
+try each color and see which is 
+best for each
+
+for the best colors of each of the
+20 shapes, try a range of opacities
+
+out of all of those, add the triangle
+that minimizes error between the 
+triangle picture and the train/test
+picture
+----------------------------------
+
+----------------------------------
+The goal of the model is to generate
+the n triangles based on a given 
+image
+
+These are then used by a genetic
+algorithm to create the final result
+----------------------------------
