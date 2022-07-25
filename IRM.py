@@ -318,7 +318,12 @@ class Triangle():
                     r_width = abs(r_points[0][0] - r_points[1][0])
                 
                 #now test if triangle inside, if rect inside, or if no overlap at all
-
+                if self.isAnyPointInsideRect(rect):
+                    return triangle_area
+                else if rect.isAnyPointInsideTriangle(self):
+                    return rect_area
+                else:
+                    return 0
 
 
             elif len(intersections) == 2:
