@@ -185,6 +185,41 @@ class Triangle():
 
         return
 
+    def isAnyPointInsideRect(self,rect):
+        for point in self.get_points_upscaled():
+            if rect.isPointInside(point):
+                return True
+        return False
+
+    def isPointInside(self,point):
+        #takes a point and returns true if it inside the triangle being called from
+        if Triangle.isInside(self.x1,self.y1,self.x2,self.y2,self.x3,self.y3,point[0],point[1]):
+            return True
+        else:
+            return False
+
+    
+    def isInside(x1, y1, x2, y2, x3, y3, x, y):
+    
+       # Calculate area of triangle ABC
+       A = area (x1, y1, x2, y2, x3, y3)
+    
+       # Calculate area of triangle PBC
+       A1 = area (x, y, x2, y2, x3, y3)
+        
+       # Calculate area of triangle PAC
+       A2 = area (x1, y1, x, y, x3, y3)
+        
+       # Calculate area of triangle PAB
+       A3 = area (x1, y1, x2, y2, x, y)
+        
+       # Check if sum of A1, A2 and A3
+       # is same as A
+       if(A == A1 + A2 + A3):
+           return True
+       else:
+           return False
+
     def get_area_overlap(self, rect):
         #figure out area of overlap of
         #this triangle and the current rect
@@ -276,13 +311,14 @@ class Triangle():
                 triangle_area = 1/2 * p3_s.magnitude * height
 
                 print(triangle_area)
-                #now just get rectangle area, if rectangle area is bigger than use triangle area
-                #if triangle area is bigger than use rectangle area
                 rect_area = 0
                 r_width = abs(r_points[0] - r_points[1])
                 r_height = abs(r_points[0][0] - r_points[1][0])
                 if r_width == 0:
                     r_width = abs(r_points[0][0] - r_points[1][0])
+                
+                #now test if triangle inside, if rect inside, or if no overlap at all
+
 
 
             elif len(intersections) == 2:
@@ -343,6 +379,9 @@ class Triangle():
                     sides.append([Vector2(points[i][0],points[i][1]),Vector2(points[0][0],points[0][1])])
 
             return sides
+
+    def area(x1, y1, x2, y2, x3, y3): 
+        return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0)
 
 class Rectangle():
     #opacity is handled by triangles, the 3 color values here should be scaled 
@@ -417,6 +456,32 @@ class Rectangle():
         #do i need to make sure all the passed values
         #are the expanded version? prob. havent yet tho
         self.r = self.r + (triangle.r * overlap_area)
+
+    def isAnyPointInsideTriangle(self,triangle):
+        for i in self.get_points_upscaled():
+            if triangle.isPointInside(i):
+                return True
+        return False
+
+    def isPointInside(self,point):
+        biggest = [0,0] #biggest x, biggest_y
+        smallest = [32,32] #smallest x, smallest y
+        for i in self.get_points_upscaled():
+            if biggest[0] < i[0]:
+                biggest[0] = i[0]
+            if biggest[1] < i[1]:
+                biggest[1] = i[1]
+            if smallest[0] > i[0]:
+                smallest[0] = i[0]
+            if smallest[1] > i[1]:
+                smallest[1] = i[1]
+        if point[0] > biggest[0] or point[0] < smallest[0]:#if in bounds for x
+            return False
+        if point[1] > biggest[1] or point[1] < smallest[1]:#if in bounds for y'
+            return False
+
+        return True
+
 
     def __str__(self):
         s = "Rect at {} with color values [r: {}, g: {}, b: {}]".format([self.x1,self.y1], self.r, self.g, self.b)
