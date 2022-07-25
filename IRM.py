@@ -3,7 +3,7 @@ import torch
 import torch.nn.functional as funky_funk
 from typing import List
 from Vector2 import Vector2 
-
+import math
 
 
 
@@ -231,6 +231,60 @@ class Triangle():
             if len(intersections) == 0:
                 #either 0a, 0b
                 print()
+
+
+
+                #if 0a then triangle is inside rect and area is equal to triangle area
+                #
+                #point p1 should be the point closest to (0,0)
+                #scale all points by the amount it takes to scale p1 to (0,0)
+                #
+                #now with these scaled points we do the following
+
+                #1. p1_angle = inv_cos((dot_product(p2_s,p3_s)/(magnitude(p2_s) * magnitude(p3_s)
+                #2. height = tan(p1_scaled) * magniutude(p3_s)
+                #3. area = 1/2 * magnitude(p3_s) * height
+                
+
+                #if 0b then rect is inside triangle and area is equal to rect area
+                #
+                #area = |left point x - right points x} * |top point y - bot point y|
+
+
+
+
+                #STILL GOTTA MAKE SCALED POINTS
+                t_points = self.get_points_upscaled()
+                r_points = rect.get_points_upscaled()
+                closest_to_origin_t = None
+                remaining_points = []
+                for t in t_points:
+                    if closest_to_origin_t == None:
+                        closest_to_origin_t = t
+                    elif t[0] + t[1] < closest_to_origin_t[0] + closest_to_origin_t[1]:
+                        remaining_points.append(closest_to_origin_t)
+                        closest_to_origin_t = t
+                
+                x_diff = closest_to_origin_t[0]
+                y_diff = closest_to_origin_t[1]
+                
+                p2_s = Vector2(remaining_points[0][0],remaining_points[0][1])
+                p3_s = Vector2(remaining_points[1][0],remaining_points[1][1])
+
+                p1_angle = math.acos((Vector2.dot_product(p2_s,p3_s))/(p2_s.magnitude * p3_s.magnitude))
+                height = math.tan(p1_angle) * p3_s.magnitude
+                triangle_area = 1/2 * p3_s.magnitude * height
+
+                print(triangle_area)
+                #now just get rectangle area, if rectangle area is bigger than use triangle area
+                #if triangle area is bigger than use rectangle area
+                rect_area = 0
+                r_width = abs(r_points[0] - r_points[1])
+                r_height = abs(r_points[0][0] - r_points[1][0])
+                if r_width == 0:
+                    r_width = abs(r_points[0][0] - r_points[1][0])
+
+
             elif len(intersections) == 2:
                 #either 2a, 2b, 2c
                 #2a is opposite intersections
@@ -243,7 +297,7 @@ class Triangle():
                 print()
 
             #3. classify within num of intersections
-
+            
 
 
         return
